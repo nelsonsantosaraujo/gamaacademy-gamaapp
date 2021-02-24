@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, Dimensions, Image, TextInput } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, Dimensions, Image, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import LottieView from 'lottie-react-native';
 import { Feather } from '@expo/vector-icons';
 
 import logoAccenture from '../images/Accenture.png';
 import { RectButton } from 'react-native-gesture-handler';
+import { contactSend } from '../services';
 
 
 export default function Contact(){
@@ -14,61 +15,96 @@ export default function Contact(){
   const [message, setMessage] = useState('');
   const [isSendMessage, setIseSendMessage] = useState(false);
 
+  function sendAccentureMessage() {
+    setIseSendMessage(true);
+
+    const postData = {
+      name,
+      email,
+      phone,
+      message,
+    };
+
+    contactSend.post('', postData).then(
+      response => {
+        setName('');
+        setEmail('');
+        setPhone('');
+        setMessage('');
+        setTimeout(() => {
+          setIseSendMessage(false);
+        }, 5000);
+      }
+    )
+  }
+
   return (
     <ScrollView style={styles.scrollView}>
-      <View style={styles.container}>
-        { isSendMessage 
-          ? (
-            <>
-              <View style={styles.sendView}>
-                <Text style={styles.sendText}>Sua mensagem</Text>
-                <Text style={styles.sendText}>Foi enviada!</Text>
-              </View>
-              <LottieView
-                style={styles.animationContent}
-                source={require('../animations/gradient.json')}
-                autoPlay
-              />
-            </>
-          )
-          : (
-            <>
-              <Image 
-                style={styles.topImage}
-                source={{ uri: 'https://startupi.com.br/wp-content/uploads/2020/01/accenture-1.jpg'}} 
-              />
-              <Image 
-                style={styles.accentureLogo}
-                source={logoAccenture}
-              />
-              <Text style={styles.title}>Formulário de Contato</Text>
-              <View>
-                <Text style={styles.labelForm}>Seu nome:</Text>
-                <TextInput 
-                  style={styles.inputForm}
+      <KeyboardAvoidingView
+      behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
+        <View style={styles.container}>
+          { isSendMessage 
+            ? (
+              <>
+                <View style={styles.sendView}>
+                  <Text style={styles.sendText}>Sua mensagem</Text>
+                  <Text style={styles.sendText}>Foi enviada!</Text>
+                </View>
+                <LottieView
+                  style={styles.animationContent}
+                  source={require('../animations/gradient.json')}
+                  autoPlay
                 />
-                <Text style={styles.labelForm}>Seu telefone:</Text>
-                <TextInput 
-                  style={styles.inputForm}
+              </>
+            )
+            : (
+              <>
+                <Image 
+                  style={styles.topImage}
+                  source={{ uri: 'https://startupi.com.br/wp-content/uploads/2020/01/accenture-1.jpg'}} 
                 />
-                <Text style={styles.labelForm}>Seu email:</Text>
-                <TextInput 
-                  style={styles.inputForm}
+                <Image 
+                  style={styles.accentureLogo}
+                  source={logoAccenture}
                 />
-                <Text style={styles.labelForm}>Deixe sua mensagem:</Text>
-                <TextInput 
-                  style={styles.inputFormMultiline}
-                  multiline
-                />
-                <RectButton style={styles.sendButton}>
-                  <Text style={styles.textSendButton}>Enviar mensagem</Text>
-                  <Feather name="send" size={20} color="#A100FF" />
-                </RectButton>
-              </View>
-            </>
-          )
-        }
-      </View>
+                <Text style={styles.title}>Formulário de Contato</Text>
+                <View>
+                  <Text style={styles.labelForm}>Seu nome:</Text>
+                  <TextInput 
+                    style={styles.inputForm}
+                    value={name}
+                    onChangeText={text => setName(text)}
+                  />
+                  <Text style={styles.labelForm}>Seu telefone:</Text>
+                  <TextInput 
+                    style={styles.inputForm}
+                    value={phone}
+                    onChangeText={text => setPhone(text)}
+                  />
+                  <Text style={styles.labelForm}>Seu email:</Text>
+                  <TextInput 
+                    style={styles.inputForm}
+                    value={email}
+                    onChangeText={text => setEmail(text)}
+                  />
+                  <Text style={styles.labelForm}>Deixe sua mensagem:</Text>
+                  <TextInput 
+                    style={styles.inputFormMultiline}
+                    multiline
+                    value={message}
+                    onChangeText={text => setMessage(text)}
+                  />
+                  <RectButton style={styles.sendButton} onPress={sendAccentureMessage}>
+                    <Text style={styles.textSendButton}>Enviar mensagem</Text>
+                    <Feather name="send" size={20} color="#A100FF" />
+                  </RectButton>
+                </View>
+              </>
+            )
+          }
+        </View>
+      </KeyboardAvoidingView>
     </ScrollView>
   );
 }
