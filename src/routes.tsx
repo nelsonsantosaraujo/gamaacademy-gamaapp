@@ -7,6 +7,8 @@ import Accenture from './screens/Accenture';
 
 import Header from './components/Header';
 import Contact from './screens/Contact';
+import AppCamera from './screens/Camera';
+import AsyncStorageScreen from './screens/AsyncStorage';
 
 const { Navigator, Screen } = createStackNavigator(); 
 
@@ -39,6 +41,22 @@ export default function Route() {
           options={{
             headerShown: true,
             header: () => <Header title="Contact" showCancel={true} />,
+          }}
+        />
+        <Screen
+          name="camera"
+          component={AppCamera}
+          options={{
+            headerShown: true,
+            header: () => <Header title="Camera" showCancel={false} />,
+          }}
+        />
+        <Screen
+          name="storage"
+          component={AsyncStorageScreen}
+          options={{
+            headerShown: true,
+            header: () => <Header title="Storage" showCancel={false} />,
           }}
         />
       </Navigator>

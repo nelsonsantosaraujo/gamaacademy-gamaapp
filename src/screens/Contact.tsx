@@ -6,9 +6,11 @@ import { Feather } from '@expo/vector-icons';
 import logoAccenture from '../images/Accenture.png';
 import { RectButton } from 'react-native-gesture-handler';
 import { contactSend } from '../services';
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function Contact(){
+  const navigation = useNavigation()
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -36,6 +38,14 @@ export default function Contact(){
         }, 5000);
       }
     )
+  }
+
+  function handlePushCamera(){
+    navigation.navigate('camera');
+  }
+
+  function handlePushStorage(){
+    navigation.navigate('storage');
   }
 
   return (
@@ -99,6 +109,16 @@ export default function Contact(){
                     <Text style={styles.textSendButton}>Enviar mensagem</Text>
                     <Feather name="send" size={20} color="#A100FF" />
                   </RectButton>
+                  <View style={styles.divider} />
+                  <RectButton style={styles.sendButton} onPress={handlePushCamera}>
+                    <Text style={styles.textSendButton}>Abrir Camera</Text>
+                    <Feather name="camera" size={20} color="#A100FF" />
+                  </RectButton>
+                  <View style={styles.divider} />
+                  <RectButton style={styles.sendButton} onPress={handlePushStorage}>
+                    <Text style={styles.textSendButton}>Abrir AsyncStorage</Text>
+                    <Feather name="database" size={20} color="#A100FF" />
+                  </RectButton>
                 </View>
               </>
             )
@@ -114,8 +134,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 80,
-    height: Dimensions.get('window').height,
+    marginBottom: 15,
   },
   scrollView: {
     width: Dimensions.get('window').width
@@ -178,5 +197,12 @@ const styles = StyleSheet.create({
     color: '#A100FF',
     fontSize: 20,
     marginRight: 6,
+  },
+  divider: {
+    width: 350,
+    height: 2,
+    alignSelf: 'center',
+    backgroundColor: '#rgba(0,0,0,0.05)',
+    marginTop: 20,
   }
 });

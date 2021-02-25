@@ -2,14 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, ScrollView, View, Text, Image, Dimensions } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import AccentureLogo from '../images/Accenture.png';
-import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { IAllUnits, IGetUnit, IHeaderProps } from '../interfaces';
 import { getData } from '../services';
 
 export default function Accenture() {
+  const storageData = async (value: string) => {
+    try {
+      await AsyncStorage.setItem('@accentureUnit', value);
+    } catch(err) {
+      console.log(err);
+    }
+  }
   const navigation = useNavigation();
   const route = useRoute();
   const params = route.params as IGetUnit;
@@ -19,12 +27,16 @@ export default function Accenture() {
   useEffect(() => {
     getData.get(`find?id=${params.id}`).then(response => {
       setUnit(response.data);
+      storageData(JSON.stringify(response.data))
     })
   }, [])
 
-
   function handlePushContact() {
     navigation.navigate('contact');
+  }
+
+  function handlePushStorage() {
+    navigation.navigate('storage');
   }
 
   return (
@@ -54,6 +66,11 @@ export default function Accenture() {
             >
               <Text style={styles.textButton}>Entrar em contato</Text>
               <Feather name="send" size={20} color="#A100FF" />
+            </RectButton>
+            <View style={styles.divider} />
+            <RectButton style={styles.contactButton} onPress={handlePushStorage}>
+              <Text style={styles.textButton}>Abrir AsyncStorage</Text>
+              <Feather name="database" size={20} color="#A100FF" />
             </RectButton>
           </View>
         ) 
@@ -106,11 +123,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 22,
+    marginVertical: 22,
   },
   textButton: {
     color: '#A100FF',
     fontSize: 18,
     marginRight: 18,
+  },
+  divider: {
+    width: 350,
+    height: 2,
+    alignSelf: 'center',
+    backgroundColor: '#rgba(0,0,0,0.05)',
   }
 })
